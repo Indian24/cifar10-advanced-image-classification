@@ -1,4 +1,3 @@
-````markdown
 # CIFAR-10 Advanced Image Classification — Multi-Level Deep Learning System
 
 [![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#)
@@ -110,19 +109,17 @@ The project emphasizes:
 ```bash
 git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
 cd cifar10-advanced-image-classification
-````
 
-### Open in Google Colab
+
+Open in Google Colab
 
 Open any of the Colab links above and run the notebook cells. Colab will run the experiments and auto-download CIFAR-10.
 
----
 
-## Install & dependencies
+Install & dependencies
 
-**Recommended:** Python 3.8+ and a virtual environment (conda / venv).
+Recommended: Python 3.8+ and a virtual environment (conda / venv).
 
-```bash
 # create env (conda example)
 conda create -n cifar10 python=3.8 -y
 conda activate cifar10
@@ -131,41 +128,38 @@ conda activate cifar10
 pip install -r requirements.txt
 # or minimal
 pip install torch torchvision numpy matplotlib seaborn
-```
 
-`requirements.txt` contains pinned or recommended versions. Hyperparameters and paths are configured in `configs/training.yaml`.
 
----
+requirements.txt contains pinned or recommended versions. Hyperparameters and paths are configured in configs/training.yaml.
 
-## How to run (train / evaluate / infer)
 
-**Train (local)** — configurable through `configs/training.yaml`
 
-```bash
+How to run (train / evaluate / infer)
+
+Train (local) — configurable through configs/training.yaml
+
+
 # run default training config
 python src/training/train.py --config configs/training.yaml
-```
 
-**Evaluate**
 
-```bash
+Evaluate
+
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
-```
 
-**Inference (example)**
 
-```python
+
+Inference (example)
+
 # quick inference example (script)
 python src/deployment/infer.py --checkpoint results/checkpoints/best.pth --image samples/airplane.png
-```
 
-> Notes: All scripts read default paths & hyperparams from `configs/training.yaml`. Overridable via CLI args in most scripts.
+Notes: All scripts read default paths & hyperparams from configs/training.yaml. Overridable via CLI args in most scripts.
 
----
 
-## Project structure & key files
 
-```
+Project structure & key files
+
 cifar10-advanced-image-classification/
 ├── configs/
 │   └── training.yaml          # main training hyperparameters & paths
@@ -183,28 +177,38 @@ cifar10-advanced-image-classification/
 ├── results/                   # logs, tensorboard, checkpoints
 ├── requirements.txt
 └── README.md
-```
 
-**Key files**
 
-* `configs/training.yaml` — default hyperparameters (epochs, lr, batch_size, weight_decay, two_stage flag). Edit to reproduce different runs.
-* `src/training/train.py` — training loop (supports MixUp, two-stage, checkpointing).
-* `src/data/dataset.py` — transforms and dataloaders (auto-download CIFAR-10).
-* `experiments/*.ipynb` — guided Colab notebooks for each level / ablation.
 
----
 
-## Examples & expected outputs
 
-**Start training (example)**
 
-```bash
+Key files
+
+configs/training.yaml — default hyperparameters (epochs, lr, batch_size, weight_decay, two_stage flag). Edit to reproduce different runs.
+
+src/training/train.py — training loop (supports MixUp, two-stage, checkpointing).
+
+src/data/dataset.py — transforms and dataloaders (auto-download CIFAR-10).
+
+experiments/*.ipynb — guided Colab notebooks for each level / ablation.
+
+
+
+
+
+
+Examples & expected outputs
+
+Start training (example)
+
 python src/training/train.py --config configs/training.yaml
-```
 
-**Typical console output (example)**:
 
-```
+
+Typical console output (example):
+
+
 Stage 1: training head only.
 Epoch [1/12], train_loss: 1.9093, train_acc: 0.3448, val_acc: 0.3516, time: 85.0s
 ...
@@ -212,24 +216,24 @@ Epoch [5/12], train_loss: 0.3452, train_acc: 0.9152, val_acc: 0.9250, time: 82.1
 Stage 2: unfreezing all parameters (fine-tune).
 ...
 Final test accuracy: 0.957
-```
 
-**Evaluate**
 
-```bash
+
+
+Evaluate
+
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
 # prints metrics: accuracy, per-class precision/recall, confusion matrix
-```
 
----
 
-## Experiment reproducibility
 
-**Default config**
+Experiment reproducibility
 
-* `configs/training.yaml` (defaults in repo):
+Default config
 
-```yaml
+configs/training.yaml (defaults in repo):
+
+
 train:
   epochs: 12
   batch_size: 128
@@ -249,21 +253,27 @@ augmentation:
   random_crop: true
   horizontal_flip: true
   mixup_alpha: 0.0
-```
 
-**Seeds & deterministic**
 
-* Set seed in scripts: `seed = 42` (configurable in `configs/training.yaml`).
-* For full determinism set `torch.backends.cudnn.deterministic = True` and `torch.backends.cudnn.benchmark = False` in `train.py` (note: may affect performance).
 
-**Two-stage training summary**
 
-* **Stage-1:** Freeze backbone, train head with strong augmentations and MixUp (reported val ≈ **92.5%**).
-* **Stage-2:** Unfreeze and fine-tune end-to-end with lighter augmentation and reduced LR → peak validation **95.7%**.
 
-**Reproducibility checklist**
+Seeds & deterministic
 
-```bash
+Set seed in scripts: seed = 42 (configurable in configs/training.yaml).
+
+For full determinism set torch.backends.cudnn.deterministic = True and torch.backends.cudnn.benchmark = False in train.py (note: may affect performance).
+
+Two-stage training summary
+
+Stage-1: Freeze backbone, train head with strong augmentations and MixUp (reported val ≈ 92.5%).
+
+Stage-2: Unfreeze and fine-tune end-to-end with lighter augmentation and reduced LR → peak validation 95.7%.
+
+Reproducibility checklist
+
+
+
 # 1) clone
 git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
 cd cifar10-advanced-image-classification
@@ -278,18 +288,25 @@ python src/training/train.py --config configs/training.yaml
 
 # 4) evaluate best checkpoint
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
-```
 
-**Open Colab notebooks**
 
-* Level 1 notebook: open [https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing](https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing)
-* Level 2 notebook: open [https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing](https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing)
-* Level 3 notebook: open [https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing](https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing)
-* Level 4 notebook: open [https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing](https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing)
 
----
 
-## Results (reported / example)
+Open Colab notebooks
+
+Level 1 notebook: open https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing
+
+Level 2 notebook: open https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing
+
+Level 3 notebook: open https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing
+
+Level 4 notebook: open https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing
+
+
+
+
+
+Results (reported / example)
 
 | Level                   | Target Accuracy | Notes / Reported                              |
 | ----------------------- | --------------: | --------------------------------------------- |
@@ -298,71 +315,100 @@ python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
 | Level 3 (advanced arch) |           ≥ 91% | Custom architecture + Grad-CAM analysis       |
 | Level 4 (expert)        |           ≥ 93% | Ensemble / meta strategies (research quality) |
 
-> Use these numbers as expected references — actual results depend on hyperparameters and compute.
+Use these numbers as expected references — actual results depend on hyperparameters and compute.
 
----
 
-## Visuals & artifacts
 
-Add images / diagrams to `docs/` and reference them in notebooks and README:
 
-* `docs/arch_diagram.png` — architecture diagram placeholder
-* `docs/gradcam_class_dog.png` — Grad-CAM example
-* `results/plots/train_val_curves.png` — training/validation loss & accuracy curves
-  **Guidance:** Save generated figures to `results/figures/` and link in README or notebook outputs.
 
----
 
-## How to contribute
+Visuals & artifacts
 
-1. Fork → branch from `main` (`feature/<name>`).
-2. Implement changes & add tests / notebooks.
-3. Keep `configs/` changes documented.
-4. Create PR with clear description, experiment logs, and artifacts.
-5. Use issue templates and link any reproduce scripts or Colab notebooks.
+Add images / diagrams to docs/ and reference them in notebooks and README:
+
+docs/arch_diagram.png — architecture diagram placeholder
+
+docs/gradcam_class_dog.png — Grad-CAM example
+
+results/plots/train_val_curves.png — training/validation loss & accuracy curves
+Guidance: Save generated figures to results/figures/ and link in README or notebook outputs.
+
+
+
+
+
+How to contribute
+
+Fork → branch from main (feature/<name>).
+
+Implement changes & add tests / notebooks.
+
+Keep configs/ changes documented.
+
+Create PR with clear description, experiment logs, and artifacts.
+
+Use issue templates and link any reproduce scripts or Colab notebooks.
 
 Suggested PR checklist:
 
-* [ ] Code follows style & linting
-* [ ] Configs updated or documented
-* [ ] Notebooks runnable & outputs reproducible
-* [ ] Results / plots checked into `results/` (if applicable)
+ Code follows style & linting
 
----
+ Configs updated or documented
 
-## License
+ Notebooks runnable & outputs reproducible
 
-This project is provided under the **MIT License** — see `LICENSE`.
+ Results / plots checked into results/ (if applicable)
 
----
 
-## Contact / Authors
 
-* **Author:** Indian24 (GitHub: [Indian24](https://github.com/Indian24))
-* For questions, issues, or collaboration requests open an issue or PR on the repository.
 
----
+ License
 
-## References
+This project is provided under the MIT License — see LICENSE.
 
-* CIFAR-10 dataset: [https://www.cs.toronto.edu/~kriz/cifar.html](https://www.cs.toronto.edu/~kriz/cifar.html)
-* Torchvision datasets: [https://pytorch.org/vision/stable/datasets.html](https://pytorch.org/vision/stable/datasets.html)
-* Grad-CAM paper & resources
 
----
 
-## Notes / Caveats
 
-* **Auto-download:** CIFAR-10 is auto-downloaded by Torchvision when `download=True`. If running behind a firewall, manually place the dataset under `./data/` or change `configs/training.yaml` root path.
-* **GPU:** Recommended for training. Use Colab GPU for quick experiments.
-* **Windows CRLF warning:** Notebooks and scripts may show LF/CRLF warnings on Windows — acceptable but consider normalizing line endings before committing.
-* **Determinism vs performance:** For deterministic reproducibility set cuDNN deterministic flags (may slow training).
 
----
 
-## Appendix — Useful commands
+Contact / Authors
 
-```bash
+Author: Indian24 (GitHub: Indian24
+)
+
+For questions, issues, or collaboration requests open an issue or PR on the repository.
+
+
+
+
+References
+
+CIFAR-10 dataset: https://www.cs.toronto.edu/~kriz/cifar.html
+
+Torchvision datasets: https://pytorch.org/vision/stable/datasets.html
+
+Grad-CAM paper & resources
+
+
+
+
+
+Notes / Caveats
+
+Auto-download: CIFAR-10 is auto-downloaded by Torchvision when download=True. If running behind a firewall, manually place the dataset under ./data/ or change configs/training.yaml root path.
+
+GPU: Recommended for training. Use Colab GPU for quick experiments.
+
+Windows CRLF warning: Notebooks and scripts may show LF/CRLF warnings on Windows — acceptable but consider normalizing line endings before committing.
+
+Determinism vs performance: For deterministic reproducibility set cuDNN deterministic flags (may slow training).
+
+
+
+
+
+Appendix — Useful commands
+
 # run a quick smoke test (one epoch, small batch)
 python src/training/train.py --config configs/training.yaml --dry_run True
 
@@ -371,11 +417,9 @@ git status
 git add .
 git commit -m "experiment: two-stage run"
 git push origin main
-```
 
----
 
-Thank you — contributions, issues, and improvements are very welcome.
 
-```
-```
+
+Thank you — contributions, issues, and improvements are welcome.
+
