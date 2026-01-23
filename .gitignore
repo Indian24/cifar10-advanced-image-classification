@@ -1,0 +1,31 @@
+@'
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+venv/
+env/
+.venv/
+
+# Data / outputs
+data/
+results/
+results/checkpoints/
+*.ckpt
+*.pth
+*.pt
+
+# Jupyter
+.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+'@ | Out-File -Encoding utf8 .gitignore

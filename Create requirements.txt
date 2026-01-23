@@ -1,0 +1,15 @@
+@'
+torch
+torchvision
+numpy
+matplotlib
+scikit-learn
+pillow
+tqdm
+tensorboard
+fastapi
+uvicorn[standard]
+pydantic
+yaml
+'@ | Out-File -Encoding utf8 requirements.txt
+

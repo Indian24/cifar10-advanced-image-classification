@@ -1,0 +1,27 @@
+train:
+  epochs: 12
+  batch_size: 128
+  num_workers: 4
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 1e-4
+  val_split: 0.1
+  two_stage: true
+  two_stage_epochs: 3
+
+model:
+  backbone: resnet18
+  num_classes: 10
+  pretrained: true
+
+augmentation:
+  enabled: true
+  random_crop: true
+  horizontal_flip: true
+  mixup_alpha: 0.0
+
+logging:
+  tensorboard_dir: results/tensorboard
+
+training:
+  checkpoint_dir: results/checkpoints
