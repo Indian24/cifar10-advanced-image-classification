@@ -1,217 +1,381 @@
-# Hiring-Challenge-Terefac
-# CIFAR-10 Image Classification – Multi-Level Deep Learning System
-# 📌 Problem Understanding
-This hiring challenge focuses on building a robust image classification system using the CIFAR-10 dataset, progressing from a baseline transfer learning model to a research-grade, production-ready deep learning system.
+````markdown
+# CIFAR-10 Advanced Image Classification — Multi-Level Deep Learning System
+
+[![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+
+**One-line:** Production-oriented CIFAR-10 image classification project demonstrating a progressive pipeline from transfer-learning baseline to research-grade, deployment-ready models (two-stage training, MixUp, Grad-CAM, ensembles).
+
+## Highlights
+- Two-stage training (head-only → end-to-end fine-tune)
+- MixUp augmentation + advanced augmentation pipeline
+- Interpretability: Grad-CAM saliency maps
+- Ensemble support (hard/soft voting)
+- Colab notebooks for reproducible experiments
+- Configured via `configs/training.yaml` for hyperparameters & paths
+
+---
+
+## Table of contents
+1. [Project Overview](#project-overview)  
+2. [Why this project / Who should use this](#why-this-project--who-should-use)  
+3. [Dataset summary](#dataset-summary)  
+4. [Level-wise challenge (L1 → L4)](#level-wise-challenge-l1-—-l4)  
+5. [Quickstart (local & Colab)](#quickstart-local--colab)  
+6. [Install & Dependencies](#install--dependencies)  
+7. [How to run (train / eval / infer)](#how-to-run-train--eval--infer)  
+8. [Project structure & key files](#project-structure--key-files)  
+9. [Examples & expected outputs](#examples--expected-outputs)  
+10. [Experiment reproducibility](#experiment-reproducibility)  
+11. [Results (reported)](#results-reported)  
+12. [Visuals & artifacts](#visuals--artifacts)  
+13. [How to contribute](#how-to-contribute)  
+14. [License](#license)  
+15. [Contact / Authors](#contact--authors)  
+16. [References](#references)  
+17. [Notes / Caveats](#notes--caveats)
+
+---
 
-The project is structured into five levels (Level 1 → Level 5). Each level evaluates not only model accuracy, but also architecture design, optimization techniques, interpretability, analysis quality, and deployment readiness.
+## Project overview
+This repository contains code, configs and Colab notebooks to train and evaluate image classification models on CIFAR-10. The goal is to present an industry-grade workflow covering data pipelines, model training (transfer learning, two-stage training, ensembles), interpretability, experiment logging, and reproducibility.
 
-The objective is to demonstrate:
+The project emphasizes:
+- Clean configuration via `configs/*.yaml`
+- Reproducible experiments (seeded runs, deterministic data splits)
+- Analysis artifacts: plots, per-class metrics, Grad-CAM images, and a research-style report
 
-1. Strong deep learning fundamentals
-2. Systematic performance improvement
-3. Research and analytical thinking
-4. Awareness of production and deployment constraints
-   
-# 📊 Dataset Overview
+---
 
-Dataset: CIFAR-10
+## Why this project / Who should use this
+**Why:** Serves as a compact reference for building production-ready image classification pipelines and for demonstrating ML engineering best practices in interviews, hiring challenges, and technical demos.
 
-Total Images: 60,000
+**Who should use:** ML engineers, researchers, students preparing portfolios, and hiring managers evaluating applied ML skills.
 
-Image Size: 32 × 32 RGB
+---
 
-# Number of Classes: 10
-Classes
-Airplane
-Automobile
-Bird
-Cat
-Deer
-Dog
-Frog
-Horse
-Ship
-Truck
+## Dataset summary
+- **Dataset:** CIFAR-10  
+- **Total images:** 60,000 (32×32 RGB)  
+- **Classes (10):** airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck  
+- **Split:** train = 50,000, test = 10,000  
+- **Source / reference:** TensorFlow Datasets / Torchvision auto-download.  
+  TensorFlow listing: https://www.tensorflow.org/datasets/catalog/cifar10
 
-# Dataset Split
+---
 
-Training: 50,000 images
+## Level-wise challenge (L1 → L4)
 
-Testing: 10,000 images
+### Level 1 — Baseline Model
+- **Objective:** Transfer-learning baseline (e.g., ResNet50/ResNet18).  
+- **Approach:** Pre-trained CNN, fine-tune classifier head for CIFAR-10.  
+- **Expected accuracy:** ≥ **85%**  
+- **Deliverables:** data loader, baseline model, test accuracy, training/validation curves  
+- **Colab:** https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing
 
-Official Resources
+---
 
-TensorFlow Dataset: https://www.tensorflow.org/datasets/catalog/cifar10
+### Level 2 — Intermediate Techniques
+- **Objective:** Improve baseline using augmentation, regularization, tuning.  
+- **Approach:** data augmentation (random crop, flip), MixUp, L2/weight decay, two-stage training.  
+- **Expected accuracy:** ≥ **90%**  
+- **Deliverables:** augmentation pipeline, ablation study, accuracy comparison, analysis report  
+- **Reported / example run:**  
+  - **Stage-1 (head training w/ strong aug + MixUp):** validation ~**92.5%**  
+  - **Stage-2 (fine-tune end-to-end with lighter aug + lower LR):** peak validation **95.7%**  
+- **Colab:** https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing
+
+---
+
+### Level 3 — Advanced Architecture Design
+- **Objective:** Custom/advanced architectures (attention, improved CNN).  
+- **Expected accuracy:** ≥ **91%**  
+- **Deliverables:** architecture explanation, implementation, per-class accuracy & confusion matrix, Grad-CAM analysis.  
+- **Colab:** https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing
+
+---
+
+### Level 4 — Expert Techniques
+- **Objective:** Near SOTA performance via ensembles, meta-learning, or novel strategies.  
+- **Expected accuracy:** ≥ **93%**  
+- **Deliverables:** multiple trained models, ensemble strategy, comparative analysis, research-quality report (~10 pages).  
+- **Colab:** https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing
 
-# 🎯 Level-Wise Challenge Description
-# LEVEL 1: Baseline Model
+---
 
-Objective: Build a baseline image classifier using transfer learning
-Approach
+## Quickstart (local and Colab)
 
-Pre-trained CNN (e.g., ResNet50)
+### Clone repository (local)
+```bash
+git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
+cd cifar10-advanced-image-classification
+````
 
-Fine-tune classification layers for CIFAR-10
+### Open in Google Colab
 
-Expected Accuracy: ≥ 85%
+Open any of the Colab links above and run the notebook cells. Colab will run the experiments and auto-download CIFAR-10.
 
-# Deliverables
+---
 
-1. Data loading pipeline
-2.Trained baseline model
-3. Test accuracy metric
-4. Training & validation curves
+## Install & dependencies
 
-Evaluation
-Pass if accuracy ≥ 85%
+**Recommended:** Python 3.8+ and a virtual environment (conda / venv).
 
-# Colab Link:
-https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing
-# LEVEL 2: Intermediate Techniques
+```bash
+# create env (conda example)
+conda create -n cifar10 python=3.8 -y
+conda activate cifar10
 
-Objective: Improve baseline performance using advanced techniques
+# install core requirements
+pip install -r requirements.txt
+# or minimal
+pip install torch torchvision numpy matplotlib seaborn
+```
 
-Approach
+`requirements.txt` contains pinned or recommended versions. Hyperparameters and paths are configured in `configs/training.yaml`.
 
-Data augmentation
+---
 
-Regularization
+## How to run (train / evaluate / infer)
 
-Hyperparameter tuning
+**Train (local)** — configurable through `configs/training.yaml`
 
-# Expected Accuracy: ≥ 90%
+```bash
+# run default training config
+python src/training/train.py --config configs/training.yaml
+```
 
-# Deliverables
+**Evaluate**
 
-1.Augmentation pipeline
-2.Ablation study (with vs without augmentation)
-3.Accuracy comparison table
-4.Performance analysis document
+```bash
+python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+```
 
-# Evaluation
-Must demonstrate measurable improvement
-A two-stage training strategy was used to improve CIFAR-10 classification performance. In Stage-1, strong data augmentation and MixUp were applied while training the classifier head, which improved validation accuracy to ~92.5%. However, further training led to saturation. In Stage-2, the model was fine-tuned end-to-end using lighter augmentations and a lower learning rate, resulting in a significant performance gain and a peak validation accuracy of 95.7%.
+**Inference (example)**
 
-# Colab Link
-https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing
+```python
+# quick inference example (script)
+python src/deployment/infer.py --checkpoint results/checkpoints/best.pth --image samples/airplane.png
+```
 
-# LEVEL 3: Advanced Architecture Design
+> Notes: All scripts read default paths & hyperparams from `configs/training.yaml`. Overridable via CLI args in most scripts.
 
-Objective: Design a custom or advanced architecture
+---
 
-Approach Options
-Custom CNN
-Attention mechanisms
-Multi-task learning
-Expected Accuracy: ≥ 91%
+## Project structure & key files
 
-# Deliverables
+```
+cifar10-advanced-image-classification/
+├── configs/
+│   └── training.yaml          # main training hyperparameters & paths
+├── experiments/               # Colab/Notebook experiments (Level1..4)
+├── src/
+│   ├── data/
+│   │   └── dataset.py         # dataloaders, augmentations
+│   ├── models/
+│   │   └── baseline.py        # baseline model wrappers (ResNet etc.)
+│   ├── training/
+│   │   ├── train.py           # training loop (two-stage support)
+│   │   └── evaluate.py        # evaluation utilities
+│   └── deployment/
+│       └── infer.py           # inference helper (optional)
+├── results/                   # logs, tensorboard, checkpoints
+├── requirements.txt
+└── README.md
+```
 
-1.Architecture design explanation
-2. Custom model implementation
-3.Per-class accuracy and confusion matrix
-4.Interpretability (Grad-CAM / saliency maps)
-5.Key insights and observations
+**Key files**
 
-# Evaluation
+* `configs/training.yaml` — default hyperparameters (epochs, lr, batch_size, weight_decay, two_stage flag). Edit to reproduce different runs.
+* `src/training/train.py` — training loop (supports MixUp, two-stage, checkpointing).
+* `src/data/dataset.py` — transforms and dataloaders (auto-download CIFAR-10).
+* `experiments/*.ipynb` — guided Colab notebooks for each level / ablation.
 
-Strong architectural justification
-Meaningful interpretability analysis
+---
 
-# Colab Link
-https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing
+## Examples & expected outputs
 
-# LEVEL 4: Expert Techniques 
+**Start training (example)**
 
-Objective: Achieve near state-of-the-art performance
+```bash
+python src/training/train.py --config configs/training.yaml
+```
 
-Approach Options
-Ensemble learning (hard/soft voting)
-Meta-learning (e.g., MAML)
-Reinforcement learning strategies
-Expected Accuracy: ≥ 93%
+**Typical console output (example)**:
 
-# Deliverables
+```
+Stage 1: training head only.
+Epoch [1/12], train_loss: 1.9093, train_acc: 0.3448, val_acc: 0.3516, time: 85.0s
+...
+Epoch [5/12], train_loss: 0.3452, train_acc: 0.9152, val_acc: 0.9250, time: 82.1s
+Stage 2: unfreezing all parameters (fine-tune).
+...
+Final test accuracy: 0.957
+```
 
-Multiple trained models
-Ensemble voting strategy
-Comparative performance analysis
-Research-quality report (~10 pages)
-Novel insights
+**Evaluate**
 
-# Evaluation
-Research depth and clarity
-Publication-quality documentation
+```bash
+python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+# prints metrics: accuracy, per-class precision/recall, confusion matrix
+```
 
-# Colab Link
-https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing
+---
 
-# 🛠️ Tech Stack
+## Experiment reproducibility
 
-Programming Language: Python
+**Default config**
 
-Frameworks: PyTorch / TensorFlow / Keras
+* `configs/training.yaml` (defaults in repo):
 
-Architectures: ResNet, Custom CNNs, Ensembles
+```yaml
+train:
+  epochs: 12
+  batch_size: 128
+  num_workers: 4
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 1e-4
+  val_split: 0.1
+  two_stage: true
+  two_stage_epochs: 3
+model:
+  backbone: resnet18
+  num_classes: 10
+  pretrained: true
+augmentation:
+  enabled: true
+  random_crop: true
+  horizontal_flip: true
+  mixup_alpha: 0.0
+```
 
-Visualization: Matplotlib, Seaborn
+**Seeds & deterministic**
 
-Explainability: Grad-CAM
+* Set seed in scripts: `seed = 42` (configurable in `configs/training.yaml`).
+* For full determinism set `torch.backends.cudnn.deterministic = True` and `torch.backends.cudnn.benchmark = False` in `train.py` (note: may affect performance).
 
-Optimization: Distillation, Quantization
+**Two-stage training summary**
 
-# ⚙️ Setup Instructions (Google Colab)
+* **Stage-1:** Freeze backbone, train head with strong augmentations and MixUp (reported val ≈ **92.5%**).
+* **Stage-2:** Unfreeze and fine-tune end-to-end with lighter augmentation and reduced LR → peak validation **95.7%**.
 
-All experiments are designed to run on Google Colab using PyTorch.
-No local setup is required.
+**Reproducibility checklist**
 
-# Step 1: Open Google Colab
-https://colab.research.google.com
+```bash
+# 1) clone
+git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
+cd cifar10-advanced-image-classification
 
-# Step 2: Clone the Repository
-!git clone https://github.com/Indian24/Hiring-Challenge-Terefac.git
+# 2) setup env & deps
+conda create -n cifar10 python=3.8 -y
+conda activate cifar10
+pip install -r requirements.txt
 
-%cd Hiring-Challenge-Terefac
+# 3) run training
+python src/training/train.py --config configs/training.yaml
 
-# Step 3: Install Dependencies
-!pip install torch torchvision numpy matplotlib
+# 4) evaluate best checkpoint
+python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+```
 
-Note: Google Colab usually comes with PyTorch pre-installed.
-This command ensures the correct versions are available.
+**Open Colab notebooks**
 
-# Step 4: Dataset Loading (Auto-Download)
+* Level 1 notebook: open [https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing](https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing)
+* Level 2 notebook: open [https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing](https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing)
+* Level 3 notebook: open [https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing](https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing)
+* Level 4 notebook: open [https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing](https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing)
 
-The CIFAR-10 dataset is automatically downloaded using Torchvision:
-from torchvision import datasets, transforms
+---
 
-train_dataset = datasets.CIFAR10(
-    root="./data",
-    train=True,
-    download=True
-)
+## Results (reported / example)
 
-test_dataset = datasets.CIFAR10(
-    root="./data",
-    train=False,
-    download=True
-)
+| Level                   | Target Accuracy | Notes / Reported                              |
+| ----------------------- | --------------: | --------------------------------------------- |
+| Level 1 (baseline)      |           ≥ 85% | Transfer-learning baseline                    |
+| Level 2 (intermediate)  |           ≥ 90% | Stage-1 ≈ **92.5%**, Stage-2 peak **95.7%**   |
+| Level 3 (advanced arch) |           ≥ 91% | Custom architecture + Grad-CAM analysis       |
+| Level 4 (expert)        |           ≥ 93% | Ensemble / meta strategies (research quality) |
 
-# Step 5: Enable GPU
+> Use these numbers as expected references — actual results depend on hyperparameters and compute.
 
-Go to Runtime → Change runtime type
+---
 
-Select Hardware accelerator → GPU
+## Visuals & artifacts
 
-Click Save
+Add images / diagrams to `docs/` and reference them in notebooks and README:
 
-Verify GPU availability:
+* `docs/arch_diagram.png` — architecture diagram placeholder
+* `docs/gradcam_class_dog.png` — Grad-CAM example
+* `results/plots/train_val_curves.png` — training/validation loss & accuracy curves
+  **Guidance:** Save generated figures to `results/figures/` and link in README or notebook outputs.
 
-import torch
+---
 
-print(torch.cuda.is_available())
+## How to contribute
 
-# Step 6: Train and Evaluate
+1. Fork → branch from `main` (`feature/<name>`).
+2. Implement changes & add tests / notebooks.
+3. Keep `configs/` changes documented.
+4. Create PR with clear description, experiment logs, and artifacts.
+5. Use issue templates and link any reproduce scripts or Colab notebooks.
 
-Run the training and evaluation scripts:
-!python train.py
-!python evaluate.py
+Suggested PR checklist:
+
+* [ ] Code follows style & linting
+* [ ] Configs updated or documented
+* [ ] Notebooks runnable & outputs reproducible
+* [ ] Results / plots checked into `results/` (if applicable)
+
+---
+
+## License
+
+This project is provided under the **MIT License** — see `LICENSE`.
+
+---
+
+## Contact / Authors
+
+* **Author:** Indian24 (GitHub: [Indian24](https://github.com/Indian24))
+* For questions, issues, or collaboration requests open an issue or PR on the repository.
+
+---
+
+## References
+
+* CIFAR-10 dataset: [https://www.cs.toronto.edu/~kriz/cifar.html](https://www.cs.toronto.edu/~kriz/cifar.html)
+* Torchvision datasets: [https://pytorch.org/vision/stable/datasets.html](https://pytorch.org/vision/stable/datasets.html)
+* Grad-CAM paper & resources
+
+---
+
+## Notes / Caveats
+
+* **Auto-download:** CIFAR-10 is auto-downloaded by Torchvision when `download=True`. If running behind a firewall, manually place the dataset under `./data/` or change `configs/training.yaml` root path.
+* **GPU:** Recommended for training. Use Colab GPU for quick experiments.
+* **Windows CRLF warning:** Notebooks and scripts may show LF/CRLF warnings on Windows — acceptable but consider normalizing line endings before committing.
+* **Determinism vs performance:** For deterministic reproducibility set cuDNN deterministic flags (may slow training).
+
+---
+
+## Appendix — Useful commands
+
+```bash
+# run a quick smoke test (one epoch, small batch)
+python src/training/train.py --config configs/training.yaml --dry_run True
+
+# list tracked files & current git status
+git status
+git add .
+git commit -m "experiment: two-stage run"
+git push origin main
+```
+
+---
+
+Thank you — contributions, issues, and improvements are very welcome.
+
+```
+```
