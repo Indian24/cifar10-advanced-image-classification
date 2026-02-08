@@ -14,6 +14,15 @@
 - Colab notebooks for reproducible experiments
 - Configured via `configs/training.yaml` for hyperparameters & paths
 
+
+## 🚀 Quickstart (Inference)
+
+Build and run the inference API using Docker:
+
+```bash
+docker build -t cifar10-infer .
+docker run -p 8080:8080 cifar10-infer
+
 ---
 
 ## Table of contents
