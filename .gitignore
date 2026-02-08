@@ -1,31 +1,12 @@
-@'
-# Byte-compiled / cache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Environments
-.env
-venv/
-env/
-.venv/
-
-# Data / outputs
-data/
+# local experiments
+create_dummy_*.py
 results/
-results/checkpoints/
-*.ckpt
-*.pth
-*.pt
+__pycache__/
 
-# Jupyter
-.ipynb_checkpoints
+# python
+*.pyc
+*.pyo
 
-# VSCode
-.vscode/
-
-# OS
-Thumbs.db
-desktop.ini
-.DS_Store
-'@ | Out-File -Encoding utf8 .gitignore
+# virtual env
+venv/
+.env
