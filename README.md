@@ -19,7 +19,7 @@
 
 Build and run the inference API using Docker:
 
-```bash
+
 docker build -t cifar10-infer .
 docker run -p 8080:8080 cifar10-infer
 
