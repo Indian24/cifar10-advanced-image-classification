@@ -1,6 +1,6 @@
 # CIFAR-10 Advanced Image Classification — Multi-Level Deep Learning System
 
-[![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#) [![License](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 
 **One-line:** Production-oriented CIFAR-10 image classification repo demonstrating a progressive pipeline from transfer-learning baseline to research-grade, deployment-ready models (two-stage training, MixUp, Grad-CAM, ensembles) with cloud/DevOps readiness for hiring assessments.
 
