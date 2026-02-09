@@ -419,7 +419,7 @@ jobs:
 
 ## License & contact
 
-* **License:** MIT (see `LICENSE`)
+
 * **Author / repo owner:** Indian24
 * **Contact:** open an issue or PR on the repository for questions / collaboration.
 
