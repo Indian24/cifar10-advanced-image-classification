@@ -1,223 +1,232 @@
 # CIFAR-10 Advanced Image Classification — Multi-Level Deep Learning System
 
-[![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![CI](https://img.shields.io/badge/ci-%20placeholder-lightgrey)](#) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 
-**One-line:** Production-oriented CIFAR-10 image classification project demonstrating a progressive pipeline from transfer-learning baseline to research-grade, deployment-ready models (two-stage training, MixUp, Grad-CAM, ensembles).
+**One-line:** Production-oriented CIFAR-10 image classification repo demonstrating a progressive pipeline from transfer-learning baseline to research-grade, deployment-ready models (two-stage training, MixUp, Grad-CAM, ensembles) with cloud/DevOps readiness for hiring assessments.
+
+---
 
 ## Highlights
-- Two-stage training (head-only → end-to-end fine-tune)
-- MixUp augmentation + advanced augmentation pipeline
-- Interpretability: Grad-CAM saliency maps
-- Ensemble support (hard/soft voting)
-- Colab notebooks for reproducible experiments
-- Configured via `configs/training.yaml` for hyperparameters & paths
 
-
-## 🚀 Quickstart (Inference)
-
-Build and run the inference API using Docker:
-
-
-docker build -t cifar10-infer .
-docker run -p 8080:8080 cifar10-infer
+* Two-stage training (head-only → end-to-end fine-tune)
+* MixUp + advanced augmentation pipeline
+* Interpretability: Grad-CAM visualizations
+* Export to ONNX / TorchScript, FastAPI + Docker inference
+* CI (GitHub Actions) smoke tests + container build example
+* Experiment tracking (W&B / MLflow patterns) and reproducibility
+* Deployment playbook: Docker → Cloud Run / ECS / Kubernetes
 
 ---
 
 ## Table of contents
-1. [Project Overview](#project-overview)  
-2. [Why this project / Who should use this](#why-this-project--who-should-use)  
-3. [Dataset summary](#dataset-summary)  
-4. [Level-wise challenge (L1 → L4)](#level-wise-challenge-l1-—-l4)  
-5. [Quickstart (local & Colab)](#quickstart-local--colab)  
-6. [Install & Dependencies](#install--dependencies)  
-7. [How to run (train / eval / infer)](#how-to-run-train--eval--infer)  
-8. [Project structure & key files](#project-structure--key-files)  
-9. [Examples & expected outputs](#examples--expected-outputs)  
-10. [Experiment reproducibility](#experiment-reproducibility)  
-11. [Results (reported)](#results-reported)  
-12. [Visuals & artifacts](#visuals--artifacts)  
-13. [How to contribute](#how-to-contribute)  
-14. [License](#license)  
-15. [Contact / Authors](#contact--authors)  
-16. [References](#references)  
-17. [Notes / Caveats](#notes--caveats)
+
+* [Project overview](#project-overview)
+* [Why this project / Who should use this](#why-this-project--who-should-use)
+* [Dataset summary](#dataset-summary)
+* [Level-wise challenge (L1 → L4)](#level-wise-challenge-l1-—-l4)
+* [Quickstart (local / Colab / inference)](#quickstart-local--colab--inference)
+* [Install & dependencies](#install--dependencies)
+* [How to run (train / evaluate / infer)](#how-to-run-train--evaluate--infer)
+* [Project structure & key files](#project-structure--key-files)
+* [Examples & expected outputs](#examples--expected-outputs)
+* [Experiment reproducibility & two-stage summary](#experiment-reproducibility--two-stage-summary)
+* [Results (reported)](#results-reported)
+* [Model card & limitations](#model-card--limitations)
+* [Deployment & MLOps playbook](#deployment--mlops-playbook)
+* [How to contribute](#how-to-contribute)
+* [Resume bullets & interview talking points](#resume-bullets--interview-talking-points)
+* [License & contact](#license--contact)
+* [Notes / caveats](#notes--caveats)
 
 ---
 
 ## Project overview
-This repository contains code, configs and Colab notebooks to train and evaluate image classification models on CIFAR-10. The goal is to present an industry-grade workflow covering data pipelines, model training (transfer learning, two-stage training, ensembles), interpretability, experiment logging, and reproducibility.
 
-The project emphasizes:
-- Clean configuration via `configs/*.yaml`
-- Reproducible experiments (seeded runs, deterministic data splits)
-- Analysis artifacts: plots, per-class metrics, Grad-CAM images, and a research-style report
+This repository is a production-focused ML project implementing CIFAR-10 classification with strong emphasis on: clear configs, reproducible experiments, model explainability, and end-to-end deployment readiness. It is designed to demonstrate both ML research skills and practical engineering (Docker, CI, export formats, deployment).
+
+**Goal for hiring assessments:** provide a single portfolio project that proves you can design models, reproduce experiments, package the model into a service, and deliver a cloud-aware deployment playbook.
 
 ---
 
 ## Why this project / Who should use this
-**Why:** Serves as a compact reference for building production-ready image classification pipelines and for demonstrating ML engineering best practices in interviews, hiring challenges, and technical demos.
 
-**Who should use:** ML engineers, researchers, students preparing portfolios, and hiring managers evaluating applied ML skills.
+**Why:** compact, complete demo of ML + MLOps best practices.
+**Who:** ML/ML-Engineering candidates, early-career ML engineers, students preparing technical interviews or hiring challenge submissions.
 
 ---
 
 ## Dataset summary
-- **Dataset:** CIFAR-10  
-- **Total images:** 60,000 (32×32 RGB)  
-- **Classes (10):** airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck  
-- **Split:** train = 50,000, test = 10,000  
-- **Source / reference:** TensorFlow Datasets / Torchvision auto-download.  
-  TensorFlow listing: https://www.tensorflow.org/datasets/catalog/cifar10
+
+* **Dataset:** CIFAR-10
+* **Images:** 60,000 (32×32 RGB)
+* **Classes (10):** airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck
+* **Split:** train = 50,000, test = 10,000
+* **Source/reference:** Torchvision auto-download or TFDS — [https://www.tensorflow.org/datasets/catalog/cifar10](https://www.tensorflow.org/datasets/catalog/cifar10)
 
 ---
 
 ## Level-wise challenge (L1 → L4)
 
-### Level 1 — Baseline Model
-- **Objective:** Transfer-learning baseline (e.g., ResNet50/ResNet18).  
-- **Approach:** Pre-trained CNN, fine-tune classifier head for CIFAR-10.  
-- **Expected accuracy:** ≥ **85%**  
-- **Deliverables:** data loader, baseline model, test accuracy, training/validation curves  
-- **Colab:** https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing
+### Level 1 — Baseline
 
----
+* **Objective:** Transfer-learning baseline (ResNet family).
+* **Expected ≥ 85%**
+* **Deliverables:** data loader, baseline model, metrics, training curves
+* **Notebook:** Level-1 Colab
 
-### Level 2 — Intermediate Techniques
-- **Objective:** Improve baseline using augmentation, regularization, tuning.  
-- **Approach:** data augmentation (random crop, flip), MixUp, L2/weight decay, two-stage training.  
-- **Expected accuracy:** ≥ **90%**  
-- **Deliverables:** augmentation pipeline, ablation study, accuracy comparison, analysis report  
-- **Reported / example run:**  
-  - **Stage-1 (head training w/ strong aug + MixUp):** validation ~**92.5%**  
-  - **Stage-2 (fine-tune end-to-end with lighter aug + lower LR):** peak validation **95.7%**  
-- **Colab:** https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing
+### Level 2 — Intermediate (augmentation & tuning)
 
----
+* **Objective:** Improve baseline via augmentation, MixUp, regularization, hyperparameter tuning.
+* **Expected ≥ 90%**
+* **Reported example:** Stage-1 head training w/ strong aug + MixUp → **~92.5%** val; Stage-2 fine-tune → **95.7%** peak val.
+* **Notebook:** Level-2 Colab
 
-### Level 3 — Advanced Architecture Design
-- **Objective:** Custom/advanced architectures (attention, improved CNN).  
-- **Expected accuracy:** ≥ **91%**  
-- **Deliverables:** architecture explanation, implementation, per-class accuracy & confusion matrix, Grad-CAM analysis.  
-- **Colab:** https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing
+### Level 3 — Advanced Architecture
 
----
+* **Objective:** Custom/attention architectures, interpretability (Grad-CAM).
+* **Expected ≥ 91%**
+* **Notebook:** Level-3 Colab
 
 ### Level 4 — Expert Techniques
-- **Objective:** Near SOTA performance via ensembles, meta-learning, or novel strategies.  
-- **Expected accuracy:** ≥ **93%**  
-- **Deliverables:** multiple trained models, ensemble strategy, comparative analysis, research-quality report (~10 pages).  
-- **Colab:** https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing
+
+* **Objective:** Ensembles, SOTA techniques, or meta-learning.
+* **Expected ≥ 93%**
+* **Notebook:** Level-4 Colab
+
+(Colab links are provided in the repo `experiments/` and README.)
 
 ---
 
-## Quickstart (local and Colab)
+## Quickstart (local / Colab / inference)
 
-### Clone repository (local)
+### Clone (local)
 
+```bash
 git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
 cd cifar10-advanced-image-classification
+```
 
+### Open in Google Colab
 
-Open in Google Colab
+Open any Level notebook in `experiments/` or use the shared Colab links in the README — Colab auto-downloads CIFAR-10.
 
-Open any of the Colab links above and run the notebook cells. Colab will run the experiments and auto-download CIFAR-10.
+### Quick inference (Docker)
 
+Build & run example inference API (FastAPI) shipped in `src/deployment/`:
 
-Install & dependencies
+```bash
+# build image (example)
+docker build -t cifar10-infer .
 
-Recommended: Python 3.8+ and a virtual environment (conda / venv).
+# run locally on port 8080
+docker run --rm -p 8080:8080 cifar10-infer
 
-# create env (conda example)
+# health check
+curl http://localhost:8080/health
+
+# example predict (JSON)
+curl -X POST http://localhost:8080/predict -H "Content-Type: application/json" \
+  -d '{"image_base64": "<BASE64_IMAGE>"}'
+```
+
+---
+
+## Install & dependencies
+
+Recommended: Python 3.8+ in a venv/conda (reproducible environment).
+
+```bash
+# conda example
 conda create -n cifar10 python=3.8 -y
 conda activate cifar10
 
-# install core requirements
+# install pinned dependencies
 pip install -r requirements.txt
-# or minimal
-pip install torch torchvision numpy matplotlib seaborn
 
+# minimal (quick):
+pip install torch torchvision numpy matplotlib seaborn pyyaml fastapi uvicorn onnxruntime
+```
 
-requirements.txt contains pinned or recommended versions. Hyperparameters and paths are configured in configs/training.yaml.
+`configs/training.yaml` holds defaults for epochs, lr, batch size, two-stage flags, and dataset paths.
 
+---
 
+## How to run (train / evaluate / infer)
 
-How to run (train / evaluate / infer)
+### Train (default config)
 
-Train (local) — configurable through configs/training.yaml
-
-
-# run default training config
+```bash
 python src/training/train.py --config configs/training.yaml
+```
 
+### Quick dry run (CI / smoke test)
 
-Evaluate
+```bash
+python src/training/train.py --config configs/training.yaml --dry_run True
+```
 
+### Evaluate
+
+```bash
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+```
 
+### Inference (script)
 
-
-Inference (example)
-
-# quick inference example (script)
+```bash
 python src/deployment/infer.py --checkpoint results/checkpoints/best.pth --image samples/airplane.png
+```
 
-Notes: All scripts read default paths & hyperparams from configs/training.yaml. Overridable via CLI args in most scripts.
+All scripts read `configs/training.yaml` by default. CLI arguments can override config values.
 
+---
 
+## Project structure & key files
 
-Project structure & key files
-
+```
 cifar10-advanced-image-classification/
 ├── configs/
-│   └── training.yaml          # main training hyperparameters & paths
-├── experiments/               # Colab/Notebook experiments (Level1..4)
+│   └── training.yaml           # training hyperparams & paths
+├── experiments/                # Colab notebooks (Level1..4)
 ├── src/
 │   ├── data/
-│   │   └── dataset.py         # dataloaders, augmentations
+│   │   └── dataset.py          # dataloaders & augmentations
 │   ├── models/
-│   │   └── baseline.py        # baseline model wrappers (ResNet etc.)
+│   │   └── baseline.py         # ResNet wrappers, model utils
 │   ├── training/
-│   │   ├── train.py           # training loop (two-stage support)
-│   │   └── evaluate.py        # evaluation utilities
+│   │   ├── train.py            # training loop (two-stage supported)
+│   │   └── evaluate.py         # evaluation & metrics
 │   └── deployment/
-│       └── infer.py           # inference helper (optional)
-├── results/                   # logs, tensorboard, checkpoints
+│       ├── infer.py            # CLI inference
+│       └── infer_api.py        # FastAPI inference app
+├── results/                    # checkpoints, logs, figures
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .github/
+    └── workflows/ci.yml        # CI smoke tests (example)
+```
 
+**Key files**
 
+* `configs/training.yaml` — default hyperparameters (epochs, lr, batch_size, two_stage, seed).
+* `src/training/train.py` — training loop: supports MixUp, two-stage, checkpointing, logging hooks.
+* `src/data/dataset.py` — transformations and dataloaders (auto-download CIFAR-10).
+* `src/deployment/infer_api.py` — FastAPI app for serving predictions.
+* `experiments/*.ipynb` — guided Colab notebooks for each level.
 
+---
 
+## Examples & expected outputs
 
+**Start training**
 
-Key files
-
-configs/training.yaml — default hyperparameters (epochs, lr, batch_size, weight_decay, two_stage flag). Edit to reproduce different runs.
-
-src/training/train.py — training loop (supports MixUp, two-stage, checkpointing).
-
-src/data/dataset.py — transforms and dataloaders (auto-download CIFAR-10).
-
-experiments/*.ipynb — guided Colab notebooks for each level / ablation.
-
-
-
-
-
-
-Examples & expected outputs
-
-Start training (example)
-
+```bash
 python src/training/train.py --config configs/training.yaml
+```
 
+**Sample console excerpt**
 
-
-Typical console output (example):
-
-
+```
 Stage 1: training head only.
 Epoch [1/12], train_loss: 1.9093, train_acc: 0.3448, val_acc: 0.3516, time: 85.0s
 ...
@@ -225,24 +234,22 @@ Epoch [5/12], train_loss: 0.3452, train_acc: 0.9152, val_acc: 0.9250, time: 82.1
 Stage 2: unfreezing all parameters (fine-tune).
 ...
 Final test accuracy: 0.957
+```
 
+**Evaluate**
 
-
-
-Evaluate
-
+```bash
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
-# prints metrics: accuracy, per-class precision/recall, confusion matrix
+# prints: overall accuracy, per-class precision/recall, confusion matrix
+```
 
+---
 
+## Experiment reproducibility & two-stage summary
 
-Experiment reproducibility
+**Default `configs/training.yaml` (example)**
 
-Default config
-
-configs/training.yaml (defaults in repo):
-
-
+```yaml
 train:
   epochs: 12
   batch_size: 128
@@ -262,32 +269,38 @@ augmentation:
   random_crop: true
   horizontal_flip: true
   mixup_alpha: 0.0
+seed: 42
+```
 
+**Determinism**
 
+* Set `seed` in config; optionally set:
 
+```python
+torch.manual_seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+```
 
+(note: determinism may slow training)
 
-Seeds & deterministic
+**Two-stage training (recommended reproducible recipe)**
 
-Set seed in scripts: seed = 42 (configurable in configs/training.yaml).
+1. **Stage-1 (head training)**
 
-For full determinism set torch.backends.cudnn.deterministic = True and torch.backends.cudnn.benchmark = False in train.py (note: may affect performance).
+   * Freeze backbone; train only classifier head with strong augmentations + MixUp. Reported val ≈ **92.5%**.
+2. **Stage-2 (fine-tune)**
 
-Two-stage training summary
+   * Unfreeze backbone; lower LR, lighter augmentation; fine-tune end-to-end. Reported peak val **95.7%**.
 
-Stage-1: Freeze backbone, train head with strong augmentations and MixUp (reported val ≈ 92.5%).
+**Reproducibility checklist**
 
-Stage-2: Unfreeze and fine-tune end-to-end with lighter augmentation and reduced LR → peak validation 95.7%.
-
-Reproducibility checklist
-
-
-
+```bash
 # 1) clone
 git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
 cd cifar10-advanced-image-classification
 
-# 2) setup env & deps
+# 2) install
 conda create -n cifar10 python=3.8 -y
 conda activate cifar10
 pip install -r requirements.txt
@@ -297,138 +310,152 @@ python src/training/train.py --config configs/training.yaml
 
 # 4) evaluate best checkpoint
 python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+```
 
+---
 
+## Results (reported / example)
 
+|                  Level | Target Accuracy | Reported / Example                          |
+| ---------------------: | --------------: | ------------------------------------------- |
+|     Level 1 (baseline) |           ≥ 85% | Transfer-learning baseline                  |
+| Level 2 (intermediate) |           ≥ 90% | Stage-1 ≈ **92.5%**, Stage-2 peak **95.7%** |
+|     Level 3 (advanced) |           ≥ 91% | Custom architecture + Grad-CAM analysis     |
+|       Level 4 (expert) |           ≥ 93% | Ensemble/meta strategies (research quality) |
 
-Open Colab notebooks
+> Note: results vary with seed, compute, augmentation strength, and hyperparameter tuning. Always include full logs & config used for each reported run.
 
-Level 1 notebook: open https://colab.research.google.com/drive/1MBBx5bhc4_OFgHj7oVW5FCNlD-yiSq46?usp=sharing
+---
 
-Level 2 notebook: open https://colab.research.google.com/drive/1SGw96OxxcLhKfvxllA4AKFo8RH49bbqC?usp=sharing
+## Model card & limitations
 
-Level 3 notebook: open https://colab.research.google.com/drive/1EpSJs8627GmuKOln0sbies6deRyDLnYg?usp=sharing
+* **Model:** ResNet-based classifier (configurable); exported to ONNX / TorchScript for inference.
+* **Intended use:** Academic / hiring challenge / demo for CIFAR-10 image classification.
+* **Limitations:** Trained on CIFAR-10 (low-res 32×32) — not suitable for high-resolution, real world images without retraining. Model may misclassify visually ambiguous classes (cat ↔ dog) — see confusion matrix and Grad-CAM visualizations in `results/`.
+* **Bias & fairness:** CIFAR-10 is a balanced academic dataset; real-world domain shifts will degrade performance.
+* **Licensing & data:** CIFAR-10 dataset terms apply; code licensed under MIT.
 
-Level 4 notebook: open https://colab.research.google.com/drive/12-LbKhmL7SYjYeTtdz1QNRp4FEyBwoHD?usp=sharing
+---
 
+## Deployment & MLOps playbook (for interviews / hiring tests)
 
+**Local demo**
 
+* FastAPI app: `src/deployment/infer_api.py`
+* Docker image example: `docker build -t cifar10-infer .` and `docker push <registry>/cifar10-infer:tag`
 
+**Cloud options**
 
-Results (reported / example)
+* **GCP Cloud Run**: push image to Google Container Registry (GCR) → deploy Cloud Run (serverless).
+* **AWS ECS / ECR**: push image to ECR → create ECS Fargate task.
+* **Kubernetes**: add `k8s/deployment.yaml` and `service.yaml` (use a HorizontalPodAutoscaler for traffic scaling).
 
-| Level                   | Target Accuracy | Notes / Reported                              |
-| ----------------------- | --------------: | --------------------------------------------- |
-| Level 1 (baseline)      |           ≥ 85% | Transfer-learning baseline                    |
-| Level 2 (intermediate)  |           ≥ 90% | Stage-1 ≈ **92.5%**, Stage-2 peak **95.7%**   |
-| Level 3 (advanced arch) |           ≥ 91% | Custom architecture + Grad-CAM analysis       |
-| Level 4 (expert)        |           ≥ 93% | Ensemble / meta strategies (research quality) |
+**CI / CD**
 
-Use these numbers as expected references — actual results depend on hyperparameters and compute.
+* GitHub Actions for lint / unit tests / smoke training run and Docker build. Example skeleton located in `.github/workflows/ci.yml`.
 
+**Observability**
 
+* Expose Prometheus metrics in the FastAPI app (request count, latency, model version).
+* Log structured inference metadata to stdout (for ingestion into Cloud Logging / ELK).
+* Integrate W&B / MLflow to store experiment artifacts and metrics.
 
+**Security**
 
+* Scan Docker images (Trivy) in CI, use secrets manager for registry credentials, enforce token rotation.
 
+---
 
-Visuals & artifacts
+## How to contribute
 
-Add images / diagrams to docs/ and reference them in notebooks and README:
+1. Fork → `feature/<name>` branch.
+2. Add tests & update `configs/`.
+3. Run CI checks locally: `pytest` and `flake8`.
+4. Create PR with experiment logs, config, and expected outputs.
 
-docs/arch_diagram.png — architecture diagram placeholder
+**PR checklist**
 
-docs/gradcam_class_dog.png — Grad-CAM example
+* [ ] Lint passes (flake8)
+* [ ] Unit tests added/updated
+* [ ] Configs documented
+* [ ] Notebook outputs reproducible
+* [ ] Results artifacts in `results/` (when applicable)
 
-results/plots/train_val_curves.png — training/validation loss & accuracy curves
-Guidance: Save generated figures to results/figures/ and link in README or notebook outputs.
+---
 
+## Resume bullets & interview talking points
 
+Use these exact lines in your resume/LinkedIn and talk through them in interviews:
 
+* “Built **CIFAR-10 Advanced Image Classification** pipeline with two-stage training and MixUp; achieved peak validation **95.7%** after head-only and end-to-end fine-tuning.”
+* “Packaged model as a Dockerized FastAPI service; exported model to ONNX; added CI smoke tests and a deployment playbook for Cloud Run / ECS.”
+* “Integrated experiment tracking (W&B/MLflow patterns), Grad-CAM explainability, and per-class analysis for production readiness.”
 
+**Prep answers:**
 
-How to contribute
+* Be ready to explain why two-stage training improves stability, how MixUp helps generalization, and tradeoffs of export formats (TorchScript vs ONNX).
 
-Fork → branch from main (feature/<name>).
+---
 
-Implement changes & add tests / notebooks.
+## Example CI skeleton (`.github/workflows/ci.yml`)
 
-Keep configs/ changes documented.
+```yaml
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with: python-version: '3.9'
+      - run: pip install -r requirements.txt
+      - run: flake8 src
+      - run: pytest -q
+      - run: python src/training/train.py --config configs/training.yaml --dry_run True
+```
 
-Create PR with clear description, experiment logs, and artifacts.
+---
 
-Use issue templates and link any reproduce scripts or Colab notebooks.
+## License & contact
 
-Suggested PR checklist:
+* **License:** MIT (see `LICENSE`)
+* **Author / repo owner:** Indian24
+* **Contact:** open an issue or PR on the repository for questions / collaboration.
 
- Code follows style & linting
+---
 
- Configs updated or documented
+## Notes / caveats
 
- Notebooks runnable & outputs reproducible
+* **Auto-download:** CIFAR-10 is auto-downloaded by Torchvision when `download=True`. If behind a firewall, download manually and point `configs/training.yaml` `data_root`.
+* **GPU recommended:** CPU training will be slow. Use Colab GPU for experiments.
+* **Windows CRLF:** Notebooks and some files may trigger LF/CRLF warnings on Windows — normalize before final commits.
+* **Determinism may slow training.**
 
- Results / plots checked into results/ (if applicable)
+---
 
+## Appendix — useful commands
 
-
-
- License
-
-This project is provided under the MIT License — see LICENSE.
-
-
-
-
-
-
-Contact / Authors
-
-Author: Indian24 (GitHub: Indian24
-)
-
-For questions, issues, or collaboration requests open an issue or PR on the repository.
-
-
-
-
-References
-
-CIFAR-10 dataset: https://www.cs.toronto.edu/~kriz/cifar.html
-
-Torchvision datasets: https://pytorch.org/vision/stable/datasets.html
-
-Grad-CAM paper & resources
-
-
-
-
-
-Notes / Caveats
-
-Auto-download: CIFAR-10 is auto-downloaded by Torchvision when download=True. If running behind a firewall, manually place the dataset under ./data/ or change configs/training.yaml root path.
-
-GPU: Recommended for training. Use Colab GPU for quick experiments.
-
-Windows CRLF warning: Notebooks and scripts may show LF/CRLF warnings on Windows — acceptable but consider normalizing line endings before committing.
-
-Determinism vs performance: For deterministic reproducibility set cuDNN deterministic flags (may slow training).
-
-
-
-
-
-Appendix — Useful commands
-
-# run a quick smoke test (one epoch, small batch)
+```bash
+# smoke test (one epoch small batch)
 python src/training/train.py --config configs/training.yaml --dry_run True
 
-# list tracked files & current git status
+# run full training
+python src/training/train.py --config configs/training.yaml
+
+# evaluate
+python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
+
+# build & run inference service
+docker build -t cifar10-infer .
+docker run --rm -p 8080:8080 cifar10-infer
+
+# git workflow
 git status
 git add .
 git commit -m "experiment: two-stage run"
 git push origin main
+```
 
-
-
-
-Thank you — contributions, issues, and improvements are welcome.
+---
 
