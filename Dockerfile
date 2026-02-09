@@ -26,3 +26,4 @@ COPY results/checkpoints/model.pth results/checkpoints/model.pth
 EXPOSE 8080
 
 CMD ["uvicorn", "src.deployment.infer_api:app", "--host", "0.0.0.0", "--port", "8080"]
+

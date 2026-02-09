@@ -1,29 +1,63 @@
 import torch
-import torch.nn as nn
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
+from PIL import Image
+import torchvision.transforms as T
+import io
+import os
+import random
 
 app = FastAPI(title="CIFAR-10 Inference API")
 
-class DummyModel(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.fc = nn.Linear(3 * 32 * 32, 10)
+MODEL_PATH = "results/checkpoints/model.pth"
+DEVICE = "cpu"
 
-    def forward(self, x):
-        return self.fc(x.view(x.size(0), -1))
+CLASSES = [
+    "airplane","automobile","bird","cat","deer",
+    "dog","frog","horse","ship","truck"
+]
 
-MODEL = DummyModel()
-MODEL.eval()
+# Try loading TorchScript model, else fallback
+model = None
+if os.path.exists(MODEL_PATH):
+    try:
+        model = torch.jit.load(MODEL_PATH, map_location=DEVICE)
+        model.eval()
+        print("✅ TorchScript model loaded")
+    except Exception as e:
+        print("⚠️ Model load failed, using mock inference:", e)
+
+transform = T.Compose([
+    T.Resize((32, 32)),
+    T.ToTensor()
+])
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "model_loaded": model is not None
+    }
 
 @app.post("/predict")
-def predict():
-    return {"class": "cat", "confidence": 0.42}
+async def predict(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    x = transform(image).unsqueeze(0)
 
+    # REAL inference if model exists
+    if model:
+        with torch.no_grad():
+            outputs = model(x)
+            probs = torch.softmax(outputs, dim=1)
+            idx = probs.argmax(dim=1).item()
+            conf = float(probs[0][idx])
+    else:
+        # Mock inference (deployment demo mode)
+        idx = random.randint(0, 9)
+        conf = round(random.uniform(0.6, 0.95), 2)
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+    return {
+        "class": CLASSES[idx],
+        "confidence": conf,
+        "mode": "real" if model else "mock"
+    }
