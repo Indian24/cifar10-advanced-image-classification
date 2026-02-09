@@ -115,7 +115,7 @@ The project emphasizes:
 ## Quickstart (local and Colab)
 
 ### Clone repository (local)
-```bash
+
 git clone https://github.com/Indian24/cifar10-advanced-image-classification.git
 cd cifar10-advanced-image-classification
 
