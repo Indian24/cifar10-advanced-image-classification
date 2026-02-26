@@ -383,17 +383,7 @@ python src/training/evaluate.py --checkpoint results/checkpoints/best.pth
 
 ---
 
-## Resume bullets & interview talking points
 
-Use these exact lines in your resume/LinkedIn and talk through them in interviews:
-
-* “Built **CIFAR-10 Advanced Image Classification** pipeline with two-stage training and MixUp; achieved peak validation **95.7%** after head-only and end-to-end fine-tuning.”
-* “Packaged model as a Dockerized FastAPI service; exported model to ONNX; added CI smoke tests and a deployment playbook for Cloud Run / ECS.”
-* “Integrated experiment tracking (W&B/MLflow patterns), Grad-CAM explainability, and per-class analysis for production readiness.”
-
-**Prep answers:**
-
-* Be ready to explain why two-stage training improves stability, how MixUp helps generalization, and tradeoffs of export formats (TorchScript vs ONNX).
 
 ---
 
